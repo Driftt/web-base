@@ -15,7 +15,6 @@ GithubStore = Marty.createStore({
   }
 
   fetchStargazersDone: (repoOwner, repoName, stargazers) ->
-    debugger
     repoId = "#{ repoOwner }/#{ repoName }"
     stargazersByRepoID = _.cloneDeep(@state.stargazersByRepoID)
     stargazersByRepoID[repoId] = stargazers
