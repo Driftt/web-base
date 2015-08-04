@@ -29,7 +29,7 @@ Development Build and Server with Hot Reload
 This setup runs a hot reloaded express server serving server-side rendered pages in addition to a web-pack development server which hot-swaps code with the client as you code.
 
     $ gulp
-    go to http://localhost:8080/ for real time hot reload
+    go to http://localhost:8003/ for real time hot reload
 
 
 Creating a New Page Component
