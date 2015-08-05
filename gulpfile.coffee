@@ -5,7 +5,7 @@ plugins = require('gulp-load-plugins')()
 runSequence = require('run-sequence')
 coffeelint = require('gulp-coffeelint')
 serverConfig = require('./config/server.config')
-exec = require('child_process').exec
+spawn = require('child_process').spawn
 
 WebpackDevServer = require('webpack-dev-server')
 makeHotDevWebPackConfig = require('./WebPackConfigCreator').makeHotDevWebPackConfig
@@ -57,13 +57,20 @@ gulp.task 'webpack-dev-server', (cb) ->
   cb()
 
 # Starts the express server created by the 'webpack-dev-server' task
-gulp.task('node-server', (cb) ->
-  exec("env NODE_ENV=#{ENV} node deploy/index.js", (err, stdout, stderr) ->
-    plugins.util.log(stdout)
-    plugins.util.log(stderr)
-    cb(err)
-  )
-)
+gulp.task 'node-server', (cb) ->
+  env = Object.create(process.env)
+  env.NODE_ENV = ENV
+
+  child = spawn('node', ['deploy/index.js'], { cwd: process.cwd(), env: env })
+
+  child.stdout.setEncoding('utf8')
+  child.stdout.on 'data', (data) ->
+    gutil.log(data)
+
+  child.stderr.setEncoding('utf8')
+  child.stderr.on 'data', (data) ->
+    gutil.log(gutil.colors.red(data))
+    gutil.beep()
 
 # Creates production bundles, one for server (render.js) one for client (main.js)
 gulp.task 'build-bundles', (cb) ->
